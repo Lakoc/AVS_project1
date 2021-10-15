@@ -2,11 +2,26 @@
 
 1. Proč je nutné určovat, zda má výpočet pokračovat?
 ==============================================================================
+Jelikož průchod příslušnými řádky a iteracemi není nijak pararelizovaný,
+můžeme si dovolit kontrolovat splnění podmínky všemi prvky v každé iteraci.
+Samotná kontrola zamezí tomu abychom prováděli zcela zbytečné výpočty na řádku,
+kde již všechny sloupce splnily danou podmínku.
 
 
 2. Byla "Line" vektorizace efektivní? Proč?
 ==============================================================================
+"Line" vektorizace není zcela efektivní, kvůli existenci "outlayers"
+(komplexních čísel, které vyžaduji mnohem více iterací než ostatní prvky na řádku).
+Což může eskalovat až k situaci, že pro všechny prvky na řádku byla podmínka splněna v první iteraci,
+ale pro 1 prvek až v iteraci 100. Pro N-1 prvků tak běží výpočet uúplně zbytečně.
 
+"Line" vektorizaci se mi avšak podařilo díky následujícím krokům zefektivnit natolik,
+že dosahuje lepších výsledků než referenční řešení.
+
+a, Ukončujíci podmínku jsem vyřešil redukci, která vede k odstranění nutnosti vyhodnoceni podmínky pro každý prvek.
+b, Odstranil jsem jakékoliv větvení, které vzniklo při původním navrhu.
+c, Mezivýsledky jsou postupně ukládany a v co nejvyšší míře znovupouživány.
+d, "overflow" hodnot je vyřešen aritmetickými výrazy.
 
 3. Jaká byla dosažena výkonnost v Intel Advisoru pro jednotlivé implementace 
 (v GFLOPS)?
