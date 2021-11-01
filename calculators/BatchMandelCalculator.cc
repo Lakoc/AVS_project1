@@ -125,16 +125,15 @@ int *BatchMandelCalculator::calculateMandelbrot() {
                         // Sum up condition achievements
                         sum += conditionAchieved;
 
-
-                                        // Calculate new imaginary and real component of current point
-                                        // We need to stop incrementing to not overflow -> ternary operator is slower than next lines
-                                        zImagAP[curr_ind] = zImagAP[curr_ind] *
-                                                            ((conditionNotAchieved * 2.0f * zRealAP[curr_ind]) +
-                                                             conditionAchievedF) +
-                                                            (conditionNotAchieved * yInitValAP[L1prefixM + col]);
-                                        zRealAP[curr_ind] = (conditionAchievedF * zRealAP[curr_ind]) +
-                                                            (conditionNotAchieved *
-                                                             (r2 - i2 + xInitValAP[L1prefixN + row]));
+                        // Calculate new imaginary and real component of current point
+                        // We need to stop incrementing to not overflow -> ternary operator is slower than next lines
+                        zImagAP[curr_ind] = zImagAP[curr_ind] *
+                                            ((conditionNotAchieved * 2.0f * zRealAP[curr_ind]) +
+                                             conditionAchievedF) +
+                                            (conditionNotAchieved * yInitValAP[prefixN + col]);
+                        zRealAP[curr_ind] = (conditionAchievedF * zRealAP[curr_ind]) +
+                                            (conditionNotAchieved *
+                                             (r2 - i2 + xInitValAP[prefixM + row]));
 
                     }
 
