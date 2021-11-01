@@ -2,7 +2,7 @@
  * @file LineMandelCalculator.cc
  * @author Alexander Polok <xpolok03@stud.fit.vutbr.cz>
  * @brief Implementation of Mandelbrot calculator that uses SIMD paralelization over lines
- * @date DATE
+ * @date 1.11.2021
  */
 #include <algorithm>
 #include <cstdlib>
@@ -27,6 +27,7 @@ LineMandelCalculator::LineMandelCalculator(unsigned matrixBaseSize, unsigned lim
     auto dxF = static_cast<float>(dx);
 
     float *xInitValAP = xInitValA;
+
     // Arrange Xs
     #pragma omp simd aligned(xInitValAP:64) simdlen(64)
     for (size_t point = 0; point < width; point++) {

@@ -26,17 +26,37 @@ d, "overflow" hodnot je vyřešen aritmetickými výrazy.
 3. Jaká byla dosažena výkonnost v Intel Advisoru pro jednotlivé implementace 
 (v GFLOPS)?
 Ref - 2,24 GFLOPS
-Line - 51,62 GFLOPS (core loop 55,53 GFLOPS)
-Batch - 49,32 GFLOPS (core loop 64,246 GFLOPS)
+Line - 51,60 GFLOPS (hlavní vypočetní smyčka 54,679 GFLOPS)
+Batch - 49,66 GFLOPS (hlavní vypočetní smyčka 64,275 GFLOPS)
 ==============================================================================
 
 
 4. Jaká část kódu byla paralizována v "Line" implementaci? Vyčteme tuto 
 informaci i u batch kalkulátoru?
+
+Z souboru LineMandelCalculator.cc.optrpt, je možné vyčístm že byly vektorizovány přesně ty smyčky označené paradigmem omp.
+Smyčka pro inicializaci pomocný polí:
+LOOP BEGIN at /home/training/dd-21-22-141/project1/calculators/LineMandelCalculator.cc(70,9)
+  remark #15301: SIMD LOOP WAS VECTORIZED
+LOOP END
+Smyčka pro hlavní výpočet:
+LOOP BEGIN at /home/training/dd-21-22-141/project1/calculators/LineMandelCalculator.cc(84,13)
+ remark #15301: SIMD LOOP WAS VECTORIZED
+LOOP END
+
+Smyčka pro uložení dat do vysledného pole:
+LOOP BEGIN at /home/training/dd-21-22-141/project1/calculators/LineMandelCalculator.cc(123,17)
+  remark #15301: SIMD LOOP WAS VECTORIZED
+LOOP END
+
+Ano tuto informaci je taktéž možné vyčíst ze souboru BatchMandelCalculator.cc.optrpt.
+
 ==============================================================================
 
 
 5. Co vyčteme z Roofline modelu pro obě vektorizované implementace?
+Hlavní smyčky obou implementací se v rooftop modelu nachází pod rychlosti L2 cache a mezi "DP Vector add" a "SP Vector add".
+Nachází se v zóně "Bound by compute and memory roofs" - jsou ohraničena jak pamětí, tak vypočetním výkonem (pravděpodobně by bylo ještě možné vyřešit některé výpadky v cache, pro optimálnější výpočet).
 ==============================================================================
 
 
