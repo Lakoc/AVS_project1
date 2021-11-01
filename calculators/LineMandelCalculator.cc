@@ -12,7 +12,7 @@
 
 LineMandelCalculator::LineMandelCalculator(unsigned matrixBaseSize, unsigned limit) :
         BaseMandelCalculator(matrixBaseSize, limit, "LineMandelCalculator") {
-    data = (int *) (aligned_alloc(AVX512_IN_BYTES,height * width * sizeof(int)));
+    data = (int *) (aligned_alloc(AVX512_IN_BYTES,width * height * sizeof(int)));
 
     // Array of arranged Xs in range(x_start, x_start + width * dx)
     xInitValA = static_cast<float *>(aligned_alloc(AVX512_IN_BYTES, sizeof(float) * width));
@@ -59,7 +59,7 @@ int *LineMandelCalculator::calculateMandelbrot() {
     // Cast doubles to floats
     auto yStart = static_cast<float>(y_start);
     auto dyF = static_cast<float>(dy);
-
+    int sum;
     // Iterate over all rows
     for (size_t row = 0; row < height; row++) {
         // Calculate imaginary value of selected row
@@ -77,7 +77,7 @@ int *LineMandelCalculator::calculateMandelbrot() {
         for (int current_iteration = 0; current_iteration < limit; current_iteration++) {
 
             // Auxiliary variable to stop loop
-            int sum = 0;
+            sum = 0;
 
             // Iterate over each complex number and
             #pragma omp simd aligned(xInitValAP, zImagAP, zRealAP, conditionAchievedAP:64) simdlen(64) reduction(+:sum) linear(current_iteration:1)
