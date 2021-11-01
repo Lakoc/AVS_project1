@@ -97,7 +97,7 @@ int *BatchMandelCalculator::calculateMandelbrot() {
                             size_t L1prefixM = L2prefixM + blockML1 * blockSizeL1;
 
                             // Copy starting x's to current row, clean up limits, copy imaginary value
-                            #pragma omp simd aligned(xInitValAP, yInitValAP, zImagAP, zRealAP, conditionAchievedAP:64) linear(row:1) collapse(2)
+                            #pragma omp simd aligned(xInitValAP, yInitValAP, zImagAP, zRealAP, conditionAchievedAP:64) collapse(2) simdlen(64)
                             for (size_t row = 0; row < blockSizeL1; row++) {
                                 size_t prefix = row * blockSizeL1;
                                 for (size_t col = 0; col < blockSizeL1; col++) {
@@ -158,7 +158,7 @@ int *BatchMandelCalculator::calculateMandelbrot() {
 
 
                                     // Save every point first condition met iteration
-                                    #pragma omp simd aligned(dataP, conditionAchievedAP:64) simdlen(64) linear(current_iteration:1) collapse(2)
+                                    #pragma omp simd aligned(dataP, conditionAchievedAP:64) simdlen(64) collapse(2)
                                     for (size_t row = 0; row < blockSizeL1; row++) {
                                         size_t prefix = row * blockSizeL1;
                                         for (size_t col = 0; col < blockSizeL1; col++) {
