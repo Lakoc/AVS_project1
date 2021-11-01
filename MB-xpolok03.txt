@@ -1,40 +1,46 @@
 #### Stručně odpovězte na následující otázky: ######
 
 1. Proč je nutné určovat, zda má výpočet pokračovat?
-==============================================================================
+
 Jelikož průchod příslušnými řádky a iteracemi není nijak pararelizovaný,
 můžeme si dovolit kontrolovat splnění podmínky všemi prvky v každé iteraci.
 Samotná kontrola zamezí tomu abychom prováděli zcela zbytečné výpočty na řádku,
 kde již všechny sloupce splnily danou podmínku.
 
+==============================================================================
 
 2. Byla "Line" vektorizace efektivní? Proč?
-==============================================================================
+
 "Line" vektorizace není zcela efektivní, kvůli existenci "outlayers"
 (komplexních čísel, které vyžaduji mnohem více iterací než ostatní prvky na řádku).
 Což může eskalovat až k situaci, že pro všechny prvky na řádku byla podmínka splněna v první iteraci,
-ale pro 1 prvek až v iteraci 100. Pro N-1 prvků tak běží výpočet uúplně zbytečně.
+ale pro 1 prvek až v iteraci 100. Pro N-1 prvků tak běží výpočet úplně zbytečně.
 
 "Line" vektorizaci se mi avšak podařilo díky následujícím krokům zefektivnit natolik,
 že dosahuje lepších výsledků než referenční řešení.
 
 a, Ukončujíci podmínku jsem vyřešil redukci, která vede k odstranění nutnosti vyhodnoceni podmínky pro každý prvek.
 b, Odstranil jsem jakékoliv větvení, které vzniklo při původním navrhu.
-c, Mezivýsledky jsou postupně ukládany a v co nejvyšší míře znovupouživány.
+c, Mezivýsledky jsou postupně ukládány a v co nejvyšší míře znovupouživány.
 d, "overflow" hodnot je vyřešen aritmetickými výrazy.
+
+==============================================================================
+
 
 3. Jaká byla dosažena výkonnost v Intel Advisoru pro jednotlivé implementace 
 (v GFLOPS)?
+
 Ref - 2,24 GFLOPS
 Line - 51,60 GFLOPS (hlavní vypočetní smyčka 54,679 GFLOPS)
 Batch - 49,66 GFLOPS (hlavní vypočetní smyčka 64,275 GFLOPS)
+
 ==============================================================================
 
 
 4. Jaká část kódu byla paralizována v "Line" implementaci? Vyčteme tuto 
 informaci i u batch kalkulátoru?
 
-Z souboru LineMandelCalculator.cc.optrpt, je možné vyčístm že byly vektorizovány přesně ty smyčky označené paradigmem omp.
+Z souboru LineMandelCalculator.cc.optrpt je možné vyčíst, že byly vektorizovány přesně ty smyčky označené paradigmem omp.
 Smyčka pro inicializaci pomocný polí:
 LOOP BEGIN at /home/training/dd-21-22-141/project1/calculators/LineMandelCalculator.cc(70,9)
   remark #15301: SIMD LOOP WAS VECTORIZED
@@ -55,8 +61,10 @@ Ano tuto informaci je taktéž možné vyčíst ze souboru BatchMandelCalculator
 
 
 5. Co vyčteme z Roofline modelu pro obě vektorizované implementace?
-Hlavní smyčky obou implementací se v rooftop modelu nachází pod rychlosti L2 cache a mezi "DP Vector add" a "SP Vector add".
-Nachází se v zóně "Bound by compute and memory roofs" - jsou ohraničena jak pamětí, tak vypočetním výkonem (pravděpodobně by bylo ještě možné vyřešit některé výpadky v cache, pro optimálnější výpočet).
+
+Hlavní smyčky obou implementací se v roofline modelu nachází pod rychlosti L2 cache a mezi "DP Vector add" a "SP Vector add".
+Nachází se v zóně "Bound by compute and memory roofs" - jsou ohraničena jak pamětí, tak výpočetním výkonem (pravděpodobně by bylo ještě možné vyřešit některé výpadky v cache, pro optimálnější výpočet).
+
 ==============================================================================
 
 
