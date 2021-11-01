@@ -25,6 +25,8 @@ d, "overflow" hodnot je vyřešen aritmetickými výrazy.
 
 3. Jaká byla dosažena výkonnost v Intel Advisoru pro jednotlivé implementace 
 (v GFLOPS)?
+Ref - 1.008 GFLOPS
+Line - 55.241 GFLOPS
 ==============================================================================
 
 
